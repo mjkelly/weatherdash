@@ -1,0 +1,9 @@
+{
+    "api_key": "FILL_ME_IN",
+    "lat": 40.7128,
+    "lon": -74.0060,
+
+    "units":  "imperial",
+    "time_fmt": "%a %l:%M%p",
+    "time_fmt_short": "%l%p"
+}
