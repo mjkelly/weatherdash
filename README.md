@@ -1,7 +1,9 @@
 # weatherdash
 
-This is the server side portion of a weather dashboard for your house. The idea
-is that you put a portable computer (like a Raspberry Pi, or similar)
+This is the server side portion of a weather dashboard for your house, using
+data and icons from <https://openweathermap.org/>.
+
+The idea is that you put a portable computer (like a Raspberry Pi, or similar)
 somewwhere running Chrome and load this web page. This dashboard can be running
 on your portable computer, or somewhere else.
 
