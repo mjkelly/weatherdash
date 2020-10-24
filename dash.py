@@ -27,6 +27,7 @@ TIME_FMT = config['time_fmt']
 TIME_FMT_SHORT = config['time_fmt_short']
 PORT = config['port']
 
+
 def get_data():
     func_start = time.time()
 
@@ -96,7 +97,6 @@ def format_page(state):
             'temp': temp,
         })
 
-
     return template.render(
         css_url=flask.url_for('static', filename='main.css'),
         desc=state['desc'],
@@ -136,5 +136,6 @@ def fake():
         state = update_state(fh.read())
     return format_page(state)
 
-if __name__ == '__main__':  
+
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT)
