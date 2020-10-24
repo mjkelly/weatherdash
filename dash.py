@@ -31,7 +31,6 @@ app = init_app()
 _MAX_DATA_AGE_SECONDS = 5 * 60
 TIME_FMT = app._config['time_fmt']
 TIME_FMT_SHORT = app._config['time_fmt_short']
-PORT = app._config['port']
 
 
 def get_app():
@@ -145,7 +144,3 @@ def fake():
     with open(FAKE_DATA_FILE, 'r') as fh:
         state = update_state(fh.read())
     return format_page(state)
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=PORT)
