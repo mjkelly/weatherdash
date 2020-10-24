@@ -11,31 +11,41 @@ import jinja2
 FAKE_DATA_FILE = 'testdata.json'
 API_URL_FMT = 'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={exclude}&appid={key}&units={units}'
 
-app = flask.Flask(__name__)
-app.logger.setLevel(logging.INFO)
+
+def init_app():
+    a = flask.Flask(__name__)
+    a.logger.setLevel(logging.INFO)
+    a._data = None
+    a._data_updated = 0
+
+    with open("config.json", "r") as fh:
+        a._config = json.load(fh)
+
+    with open("tmpl.html", "r") as fh:
+        a._template = jinja2.Template(fh.read())
+
+    return a
+
+
+app = init_app()
 _MAX_DATA_AGE_SECONDS = 5 * 60
-app._data = None
-app._data_updated = 0
+TIME_FMT = app._config['time_fmt']
+TIME_FMT_SHORT = app._config['time_fmt_short']
+PORT = app._config['port']
 
-with open("config.json", "r") as fh:
-    config = json.load(fh)
 
-with open("tmpl.html", "r") as fh:
-    template = jinja2.Template(fh.read())
-
-TIME_FMT = config['time_fmt']
-TIME_FMT_SHORT = config['time_fmt_short']
-PORT = config['port']
+def get_app():
+    return app
 
 
 def get_data():
     func_start = time.time()
 
-    url = API_URL_FMT.format(lat=config['lat'],
-                             lon=config['lon'],
-                             key=config['api_key'],
+    url = API_URL_FMT.format(lat=app._config['lat'],
+                             lon=app._config['lon'],
+                             key=app._config['api_key'],
                              exclude='',
-                             units=config['units'])
+                             units=app._config['units'])
     app.logger.info(f'Remote request to {url}...')
 
     resp = urllib.request.urlopen(url)
@@ -97,7 +107,7 @@ def format_page(state):
             'temp': temp,
         })
 
-    return template.render(
+    return app._template.render(
         css_url=flask.url_for('static', filename='main.css'),
         desc=state['desc'],
         time=state['now_str'],
