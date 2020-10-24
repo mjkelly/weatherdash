@@ -2,10 +2,15 @@ import urllib.request
 import json
 import datetime
 import logging
-import flask
 import time
 
-# Initial setup
+import flask
+import jinja2
+
+# Initial setup and UGLY UGLY GLOBALS.
+FAKE_DATA_FILE = 'testdata.json'
+API_URL_FMT = 'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={exclude}&appid={key}&units={units}'
+
 app = flask.Flask(__name__)
 app.logger.setLevel(logging.INFO)
 _MAX_DATA_AGE_SECONDS = 5 * 60
@@ -14,47 +19,13 @@ app._data_updated = 0
 
 with open("config.json", "r") as fh:
     config = json.load(fh)
+
+with open("tmpl.html", "r") as fh:
+    template = jinja2.Template(fh.read())
+
 TIME_FMT = config['time_fmt']
 TIME_FMT_SHORT = config['time_fmt_short']
-
-# Constants
-FAKE_DATA_FILE = 'testdata.json'
-API_URL_FMT = 'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={exclude}&appid={key}&units={units}'
-
-TMPL = '''
-<!doctype html>
-<html lang="en">
-    <title>Local Weather</title>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="30"/>
-    <link rel="stylesheet" href="{css_url}">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <body class="{daynight}">
-        <div class="main-container">
-            <div class="left">
-                <div class="time-now">
-                    {time}
-                </div>
-                <div class="weather-container">
-                    <div class="temp">
-                        {temp}&deg; ({feels_like}&deg;)
-                    </div>
-                </div>
-                <div class="weather-desc">
-                    <div class="weather-desc-txt">{desc}</div>
-                    <img src="https://openweathermap.org/img/wn/{w_icon}@2x.png" alt="Icon for {desc}">
-                </div>
-            </div>
-            <div class="right">
-                <div class="hourly-container">
-                    {hourly}
-                </div>
-            </div>
-        </div>
-    </body>
-</html>
-'''
-
+PORT = config['port']
 
 def get_data():
     func_start = time.time()
@@ -116,16 +87,17 @@ def format_page(state):
         dt_str = dt.strftime(TIME_FMT_SHORT)
         weather_str = h['weather'][0]['description']
         weather_icon = h['weather'][0]['icon']
-        url = "https://openweathermap.org/img/wn/{code}.png".format(
-            code=weather_icon)
         temp = round(h['temp'])
-        rain = 'rain' in h
-        hourly.append(
-            f"""<div class="hourly-txt{" rain" if rain else ""}">{dt_str}: {temp}&deg;</div>
-            <div class="hourly-img"><img alt="{weather_str} icon" src="{url}"></div>
-            """)
+        hourly.append({
+            'rain': 'rain' if 'rain' in h else '',
+            'weather_str': weather_str,
+            'weather_icon': weather_icon,
+            'dt_str': dt_str,
+            'temp': temp,
+        })
 
-    return TMPL.format(
+
+    return template.render(
         css_url=flask.url_for('static', filename='main.css'),
         desc=state['desc'],
         time=state['now_str'],
@@ -133,7 +105,7 @@ def format_page(state):
         feels_like=state['feels_like'],
         w_icon=state['w_icon'],
         updated=str(datetime.datetime.now()),
-        hourly=''.join([f'<div class="hourly">{h}</div>' for h in hourly]),
+        hourly=hourly,
         daynight=state['daynight'],
     )
 
@@ -163,3 +135,6 @@ def fake():
     with open(FAKE_DATA_FILE, 'r') as fh:
         state = update_state(fh.read())
     return format_page(state)
+
+if __name__ == '__main__':  
+    app.run(host='0.0.0.0', port=PORT)
