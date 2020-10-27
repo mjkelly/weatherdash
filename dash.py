@@ -141,6 +141,11 @@ def weather_inner():
     """This is just the part of the main page inside <body>."""
     return weather_impl("inner.html")
 
+@app.route('/reloader')
+def reloader():
+    """This is just the part of the main page inside <body>."""
+    return weather_impl("reloader.html")
+
 @app.route('/fake')
 def fake():
     """This loads data from testdata.json.
