@@ -21,8 +21,9 @@ def init_app():
     with open("config.json", "r") as fh:
         a._config = json.load(fh)
 
-    with open("tmpl.html", "r") as fh:
-        a._template = jinja2.Template(fh.read())
+    a._env = jinja2.Environment(
+        loader=jinja2.PackageLoader('dash', 'templates'),
+        autoescape=jinja2.select_autoescape(['html', 'xml']))
 
     return a
 
@@ -89,7 +90,7 @@ def update_state(data_str):
     return state
 
 
-def format_page(state):
+def format_page(state, template_name):
     hours_to_show = 8
     hourly = []
     for h in state['data']['hourly'][:hours_to_show]:
@@ -106,7 +107,8 @@ def format_page(state):
             'temp': temp,
         })
 
-    return app._template.render(
+    tmpl = app._env.get_template(template_name)
+    return tmpl.render(
         css_url=flask.url_for('static', filename='main.css'),
         desc=state['desc'],
         time=state['now_str'],
@@ -118,10 +120,7 @@ def format_page(state):
         daynight=state['daynight'],
     )
 
-
-@app.route('/')
-def weather():
-    """This is the main page. It shows the weather dashboard."""
+def weather_impl(template_name):
     data_age = time.time() - app._data_updated
     app.logger.info(
         f"data_age = {data_age:.1f}, last updated {app._data_updated:.1f}")
@@ -130,8 +129,17 @@ def weather():
         app._data = get_data()
         app._data_updated = time.time()
     state = update_state(app._data)
-    return format_page(state)
+    return format_page(state, template_name)
 
+@app.route('/')
+def weather():
+    """This is the main page. It shows the weather dashboard."""
+    return weather_impl("tmpl.html")
+
+@app.route('/inner')
+def weather_inner():
+    """This is just the part of the main page inside <body>."""
+    return weather_impl("inner.html")
 
 @app.route('/fake')
 def fake():
@@ -143,4 +151,4 @@ def fake():
     app.logger.warning(f'Using fake data from {FAKE_DATA_FILE}!')
     with open(FAKE_DATA_FILE, 'r') as fh:
         state = update_state(fh.read())
-    return format_page(state)
+    return format_page(state, "tmpl.html")
