@@ -120,6 +120,7 @@ def format_page(state, template_name):
         daynight=state['daynight'],
     )
 
+
 def weather_impl(template_name):
     data_age = time.time() - app._data_updated
     app.logger.info(
@@ -131,20 +132,24 @@ def weather_impl(template_name):
     state = update_state(app._data)
     return format_page(state, template_name)
 
+
 @app.route('/')
 def weather():
     """This is the main page. It shows the weather dashboard."""
     return weather_impl("tmpl.html")
+
 
 @app.route('/inner')
 def weather_inner():
     """This is just the part of the main page inside <body>."""
     return weather_impl("inner.html")
 
+
 @app.route('/reloader')
 def reloader():
     """This is just the part of the main page inside <body>."""
     return weather_impl("reloader.html")
+
 
 @app.route('/fake')
 def fake():
