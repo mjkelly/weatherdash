@@ -10,7 +10,12 @@ on your portable computer, or somewhere else.
 It's designed to look good on an 800x640 screen, like this one:
 <https://www.adafruit.com/product/2260>
 
+Here's a photo of weatherdash running on that screen:
+
+![weatherdash-photo](./weatherdash-photo.jpg)
+
 Someday if I'm not too lazy I'll write a little tutorial on this whole process!
+
 
 ## Installation
 
