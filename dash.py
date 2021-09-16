@@ -23,7 +23,7 @@ def init_app():
         a._config = json.load(fh)
 
     a._env = jinja2.Environment(
-        loader=jinja2.PackageLoader('dash', 'templates'),
+        loader=jinja2.FileSystemLoader('templates'),
         autoescape=jinja2.select_autoescape(['html', 'xml']))
 
     return a
