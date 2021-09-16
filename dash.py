@@ -4,6 +4,7 @@ import datetime
 import logging
 import time
 
+import pytz
 import flask
 import jinja2
 
@@ -30,6 +31,8 @@ def init_app():
 app = init_app()
 _MAX_DATA_AGE_SECONDS = 5 * 60
 TIME_FMT = app._config['time_fmt']
+TZ_STR = app._config['tz']
+TZ = pytz.timezone(TZ_STR)
 TIME_FMT_SHORT = app._config['time_fmt_short']
 PORT = app._config['port']
 
@@ -61,8 +64,8 @@ def update_state(data_str):
 
     data = json.loads(data_str)
     dt = data['current']['dt']
-    as_of_dt = datetime.datetime.fromtimestamp(dt)
-    state_now = datetime.datetime.now()
+    as_of_dt = datetime.datetime.fromtimestamp(dt, tz=TZ)
+    state_now = datetime.datetime.now(tz=TZ)
     sunrise = data['current']['sunrise']
     sunset = data['current']['sunrise']
     daynight = 'day' if dt > sunrise and dt < sunset else 'night'
@@ -94,7 +97,7 @@ def format_page(state):
     hours_to_show = 8
     hourly = []
     for h in state['data']['hourly'][:hours_to_show]:
-        dt = datetime.datetime.fromtimestamp(h['dt'])
+        dt = datetime.datetime.fromtimestamp(h['dt'], tz=TZ)
         dt_str = dt.strftime(TIME_FMT_SHORT)
         weather_str = h['weather'][0]['description']
         weather_icon = h['weather'][0]['icon']
@@ -114,7 +117,7 @@ def format_page(state):
         temp=state['temp'],
         feels_like=state['feels_like'],
         w_icon=state['w_icon'],
-        updated=str(datetime.datetime.now()),
+        updated=str(datetime.datetime.now(tz=TZ)),
         hourly=hourly,
         daynight=state['daynight'],
     )
@@ -148,4 +151,5 @@ def fake():
 
 
 if __name__ == '__main__':
+    print(f"port = {PORT}")
     app.run(host='0.0.0.0', port=PORT)
