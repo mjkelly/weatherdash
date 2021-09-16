@@ -15,6 +15,9 @@ run:  ## Run the app (in development mode)
 run-prod: ## Run the app in prod mode
 	./venv/bin/waitress-serve --call dash:get_app
 
+docker:
+	sudo docker build --tag michaelkelly.org/weatherdash:latest .
+
 .PHONY: clean
 clean: ## Clean up local environment.
 	rm -rf venv
