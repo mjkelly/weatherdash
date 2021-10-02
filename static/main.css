@@ -13,17 +13,11 @@ body {
   background-color: #2e618f;
   line-height: 1.4;
   text-align: center;
-  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-family: Antonio;
 
-  color: #333;
-  background-color: #fff;
+  color: #eee;
+  background-color: #69d7ff;
 }
-
-/* day/night themes would be really cool */
-/* body.night { */
-/*   color: #fff; */
-/*   background-color: #2e618f; */
-/* } */
 
 .rain {
   background: #badeff;
