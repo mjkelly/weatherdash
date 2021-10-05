@@ -17,13 +17,13 @@
         <div class="hourly-container">
         {% for h in hourly %}
             <div class="hourly">
-                <div class="hourly-txt {{ h['rain'] }}">
-                  {{ h['dt_str'] }}: {{ h['temp'] }}&deg;
-                </div>
-                <div class="hourly-img"><img alt="{{ h['weather_str'] }} icon" src="https://openweathermap.org/img/wn/{{ h['weather_icon'] }}.png"></div>
-                <div class="hourly-str">
-                  {{ h['weather_str'] }}
-                </div>
+              <div class="hourly-txt">
+                {{ h['dt_str'] }}: {{ h['temp'] }}&deg;
+              </div>
+              <div class="hourly-str">
+                {{ h['weather_str'] }}
+              </div>
+              <div class="hourly-img"><img alt="{{ h['weather_str'] }} icon" src="https://openweathermap.org/img/wn/{{ h['weather_icon'] }}.png"></div>
             </div>
         {% endfor %}
         </div>
