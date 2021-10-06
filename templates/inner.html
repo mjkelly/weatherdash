@@ -17,7 +17,7 @@
         <div class="hourly-container">
         {% for h in hourly %}
             <div class="hourly">
-              <div class="hourly-txt">
+              <div class="hourly-txt {{ h['rain'] }}">
                 {{ h['dt_str'] }}: {{ h['temp'] }}&deg;
               </div>
               <div class="hourly-str">
