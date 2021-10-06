@@ -22,7 +22,7 @@ docker: ## Build a docker image
 
 .PHONY: docker-run
 docker-run: ## Run the latest docker image
-	sudo docker run -i --name weatherdash --rm -p 5000:8080 michaelkelly.org/weatherdash:latest 
+	sudo docker run --name weatherdash -ti --rm -p 5000:8080 michaelkelly.org/weatherdash:latest
 
 .PHONY: clean
 clean: ## Clean up local environment.

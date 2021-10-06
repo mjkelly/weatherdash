@@ -1,8 +1,6 @@
-FROM ubuntu:20.04
-RUN apt-get update
-RUN apt-get install -y python3 python3-venv
+FROM python:3-slim
 COPY . /app
 WORKDIR /app
 RUN python3 -m venv venv
-RUN /app/venv/bin/pip3 install -r /app/requirements.txt
+RUN /app/venv/bin/pip3 install --no-cache-dir -r /app/requirements.txt
 CMD /app/venv/bin/waitress-serve --call dash:get_app
