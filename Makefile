@@ -1,3 +1,4 @@
+.PHONY: all
 all: venv/install  ## [default] Set up local environment
 
 venv: ## Create virtualenv
@@ -8,16 +9,21 @@ venv/install: venv requirements.txt ## Install packages in venv.
 	touch venv/install
 
 .PHONY: run
-run:  ## Run the app (in development mode)
+run: venv/install ## Run the app (in development mode)
 	FLASK_APP=dash.py FLASK_ENV=dev FLASK_DEBUG=1 ./venv/bin/python3 -m flask run --host=0.0.0.0 --port=5000
 
 .PHONY: run-prod
-run-prod: ## Run the app in prod mode
+run-prod: venv/install ## Run the app in prod mode
 	./venv/bin/waitress-serve --host=0.0.0.0 --port=5000 --call dash:get_app 
 
-docker:
+.PHONY: docker
+docker: ## Build a docker image
 	sudo docker build --tag michaelkelly.org/weatherdash:latest .
 
 .PHONY: clean
 clean: ## Clean up local environment.
 	rm -rf venv
+
+.PHONY: help
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
