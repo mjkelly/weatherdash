@@ -20,6 +20,10 @@ run-prod: venv/install ## Run the app in prod mode
 docker: ## Build a docker image
 	sudo docker build --tag michaelkelly.org/weatherdash:latest .
 
+.PHONY: docker-run
+docker-run: ## Run the latest docker image
+	sudo docker run -i --name weatherdash --rm -p 5000:8080 michaelkelly.org/weatherdash:latest 
+
 .PHONY: clean
 clean: ## Clean up local environment.
 	rm -rf venv

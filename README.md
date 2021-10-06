@@ -59,3 +59,8 @@ make run
 ```
 
 Then you can visit http://localhost:5000 to see the dashboard.
+
+## Docker
+
+There are `docker` and `docker-run` targets in the Makefile as well, to help
+with Docker testing.
