@@ -2,6 +2,7 @@ import urllib.request
 import json
 import datetime
 import logging
+import logging.config
 import time
 
 import pytz
@@ -28,7 +29,25 @@ def init_app():
 
     return a
 
+def init_logging():
+    logging.config.dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }},
+        'handlers': {'main': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stdout',
+            'formatter': 'default',
+        }},
+        'root': {
+            'level': 'INFO',
+            'handlers': ['main'],
+        },
+    })
 
+
+init_logging()
 app = init_app()
 _MAX_DATA_AGE_SECONDS = 5 * 60
 TIME_FMT = app._config['time_fmt']
