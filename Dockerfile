@@ -7,7 +7,7 @@ RUN ./venv/bin/pip3 install --no-cache-dir -r ./requirements.txt
 
 COPY static /app/static/
 COPY templates /app/templates/
-COPY config.json /app/
-COPY dash.py /app/
+COPY *.json /app/
+COPY *.py /app/
 
-CMD /app/venv/bin/waitress-serve --call dash:get_app
+CMD /app/venv/bin/waitress-serve --call run:get_app
