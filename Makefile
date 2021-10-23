@@ -6,7 +6,7 @@ venv: ## Create virtualenv
 
 venv/install: venv requirements.txt ## Install packages in venv.
 	./venv/bin/pip3 install -r requirements.txt
-	touch venv/install
+	cp requirements.txt venv/install
 
 .PHONY: run
 run: venv/install ## Run the app (in development mode)
