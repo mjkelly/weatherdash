@@ -1,5 +1,9 @@
 # weatherdash
 
+**I rewrote this in Go and improved the display significantly: see
+<https://git.sr.ht/~mkelly/weatherdash-go>. I no longer maintain this version
+(to the extent that I maintain either).**
+
 This is the server side portion of a weather dashboard for your house, using
 data and icons from <https://openweathermap.org/>.
 
